@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import dotenv from "dotenv";
 
 // routes
-import userRoutes from "./routes/users";
+import submissionRoutes from "./routes/submissions.router";
 
 const app = express();
 dotenv.config();
@@ -21,7 +21,7 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 3001;
 
-app.use("/users", userRoutes);
+app.use("/submissions", submissionRoutes);
 
 app.listen(PORT, () => {
   console.log(`App running on PORT ${PORT}`);
