@@ -6,6 +6,7 @@ import {
 } from "../../db/schema";
 import { db } from "../../db/setup";
 import { eq } from "drizzle-orm";
+import { StatusCodes } from "http-status-codes";
 
 export const createSubmission = async (req: Request, res: Response) => {
   let {
@@ -33,14 +34,14 @@ export const createSubmission = async (req: Request, res: Response) => {
   try {
     const data = await db.insert(submissions).values(submission);
 
-    return res.status(201).json({
+    return res.status(StatusCodes.CREATED).json({
       success: true,
       data: { data },
       message: "Added Successfully",
     });
   } catch (error) {
     return res
-      .status(500)
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ success: false, data: null, message: "Unable to add" });
   }
 };
@@ -53,9 +54,11 @@ export const getSubmission = async (req: Request, res: Response) => {
       .from(submissions)
       .where(eq(submissions.id, Number(submissionId)));
 
-    return res.status(200).json({ success: true, data: submissionById });
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, data: submissionById });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: null,
       message: "Unable to get submissions",
@@ -67,9 +70,11 @@ export const getSubmissions = async (req: Request, res: Response) => {
   try {
     const allSubmissions = await db.select().from(submissions);
 
-    return res.status(200).json({ success: true, data: allSubmissions });
+    return res
+      .status(StatusCodes.OK)
+      .json({ success: true, data: allSubmissions });
   } catch (error) {
-    return res.status(500).json({
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: null,
       message: "Unable to get submissions",
@@ -103,7 +108,7 @@ export const updateSubmission = async (req: Request, res: Response) => {
 
   try {
     if (!submissionId) {
-      return res.status(400).json({
+      return res.status(StatusCodes.BAD_REQUEST).json({
         success: false,
         message: "Please provide submission_id to update",
       });
@@ -114,10 +119,12 @@ export const updateSubmission = async (req: Request, res: Response) => {
       .set(updatedSubmission)
       .where(eq(submissions.id, Number(submissionId)));
     return res
-      .status(200)
+      .status(StatusCodes.OK)
       .json({ success: true, message: "Updated Successfully" });
   } catch (error) {
-    return res.status(500).json({ success: true, message: "Cannot Update" });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: true, message: "Cannot Update" });
   }
 };
 
@@ -129,9 +136,11 @@ export const deleteSubmission = async (req: Request, res: Response) => {
       .delete(submissions)
       .where(eq(submissions.id, Number(submissionId)));
     return res
-      .status(200)
+      .status(StatusCodes.OK)
       .json({ success: true, message: "Delete Successfully" });
   } catch (error) {
-    return res.status(500).json({ success: true, message: "Cannot Delete" });
+    return res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ success: true, message: "Cannot Delete" });
   }
 };
