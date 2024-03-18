@@ -5,12 +5,6 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@planetscale/database':
-    specifier: ^1.16.0
-    version: 1.16.0
-  '@types/body-parser':
-    specifier: ^1.19.5
-    version: 1.19.5
   body-parser:
     specifier: ^1.20.2
     version: 1.20.2
@@ -22,7 +16,7 @@ dependencies:
     version: 16.4.5
   drizzle-orm:
     specifier: ^0.30.2
-    version: 0.30.2(@planetscale/database@1.16.0)(mysql2@3.9.2)
+    version: 0.30.2(mysql2@3.9.2)
   express:
     specifier: ^4.18.3
     version: 4.18.3
@@ -31,6 +25,9 @@ dependencies:
     version: 3.9.2
 
 devDependencies:
+  '@types/body-parser':
+    specifier: ^1.19.5
+    version: 1.19.5
   '@types/cors':
     specifier: ^2.8.17
     version: 2.8.17
@@ -503,11 +500,6 @@ packages:
       '@jridgewell/sourcemap-codec': 1.4.15
     dev: true
 
-  /@planetscale/database@1.16.0:
-    resolution: {integrity: sha512-HNUrTqrd8aTRZYMDcsoZ62s36sIWkMMmKZBOehoCWR2WrfNPKq+Q1yQef5okl3pSVlldFnu2h/dbHjOsDTHXug==}
-    engines: {node: '>=16'}
-    dev: false
-
   /@tsconfig/node10@1.0.9:
     resolution: {integrity: sha512-jNsYVVxU8v5g43Erja32laIDHXeoNvFEpX33OK4d6hljo3jDhCBDhx5dhCCTMWUojscpAagGiRkBKxpdl9fxqA==}
     dev: true
@@ -529,11 +521,13 @@ packages:
     dependencies:
       '@types/connect': 3.4.38
       '@types/node': 20.11.28
+    dev: true
 
   /@types/connect@3.4.38:
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
     dependencies:
       '@types/node': 20.11.28
+    dev: true
 
   /@types/cors@2.8.17:
     resolution: {integrity: sha512-8CGDvrBj1zgo2qE+oS3pOCyYNqCPryMWY2bGfwA0dcfopWGgxs+78df0Rs3rc9THP4JkOhLsAa+15VdpAqkcUA==}
@@ -575,6 +569,7 @@ packages:
     resolution: {integrity: sha512-M/GPWVS2wLkSkNHVeLkrF2fD5Lx5UC4PxA0uZcKc6QqbIQUJyW1jVjueJYi1z8n0I5PxYrtpnPnWglE+y9A0KA==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
 
   /@types/qs@6.9.12:
     resolution: {integrity: sha512-bZcOkJ6uWrL0Qb2NAWKa7TBU+mJHPzhx9jjLL1KHF+XpzEcR7EXHvjbHlGtR/IsP1vyPrehuS6XqkmaePy//mg==}
@@ -893,7 +888,7 @@ packages:
       - supports-color
     dev: true
 
-  /drizzle-orm@0.30.2(@planetscale/database@1.16.0)(mysql2@3.9.2):
+  /drizzle-orm@0.30.2(mysql2@3.9.2):
     resolution: {integrity: sha512-DNd3djg03o+WxZX3pGD8YD+qrWT8gbrbhaZ2W0PVb6yH4rtM/VTB92cTGvumcRh7SSd2KfV0NWYDB70BHIXQTg==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -967,7 +962,6 @@ packages:
       sqlite3:
         optional: true
     dependencies:
-      '@planetscale/database': 1.16.0
       mysql2: 3.9.2
     dev: false
 
@@ -1859,6 +1853,7 @@ packages:
 
   /undici-types@5.26.5:
     resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+    dev: true
 
   /unpipe@1.0.0:
     resolution: {integrity: sha512-pjy2bYhSsufwWlKwPc+l3cN7+wuJlK6uz0YdJEOlQDbl6jo/YlPi4mb8agUkVC8BF7V8NuzeyPNqRksA3hztKQ==}
