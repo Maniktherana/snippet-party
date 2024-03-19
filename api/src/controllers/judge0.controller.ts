@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import dotenv from "dotenv";
@@ -6,33 +6,6 @@ import { client } from "../db/redis";
 import { Judge0 } from "../schemas/index";
 
 dotenv.config();
-
-export const runJudge0 = async (req: Request, res: Response) => {
-  const { languageId, sourceCode, stdin }: Judge0 = req.body;
-
-  try {
-    const createResponse: AxiosResponse = await axios.post("/createStdout", {
-      languageId,
-      sourceCode,
-      stdin,
-    });
-
-    const { token } = createResponse.data;
-    const getResponse: AxiosResponse = await axios.post("/getStdout", {
-      token,
-    });
-
-    res.status(StatusCodes.OK).json({
-      success: true,
-      data: getResponse.data,
-    });
-  } catch (error) {
-    console.error(error);
-    res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, message: "Internal Server Error" });
-  }
-};
 
 export const getStdout = async (req: Request, res: Response) => {
   const { token }: { token: string } = req.body;
@@ -71,7 +44,7 @@ export const getStdout = async (req: Request, res: Response) => {
         success: true,
         data: response.data,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
@@ -83,11 +56,11 @@ export const getStdout = async (req: Request, res: Response) => {
 };
 
 export const createStdout = async (req: Request, res: Response) => {
-  const { languageId, sourceCode, stdin }: Judge0 = req.body;
+  const { languageId, code, stdin }: Judge0 = req.body;
 
   const options = {
     method: "POST",
-    url: "https://judge0-ce.p.rapidapi.com/submissions/",
+    url: "https://judge0-ce.p.rapidapi.com/submissions",
     params: {
       base64_encoded: "true",
       fields: "*",
@@ -100,16 +73,18 @@ export const createStdout = async (req: Request, res: Response) => {
     },
     body: {
       language_id: languageId,
-      source_code: sourceCode,
-      stdin,
+      source_code: code,
+      stdin: stdin,
     },
   };
 
-  const key = JSON.stringify({ languageId, sourceCode, stdin });
+  await client.connect();
+
+  const key = JSON.stringify({ languageId, code, stdin });
   const cachedData = await client.get(key).catch((err) => {
     res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+      .json({ error: `Redis Error: ${err}` });
   });
 
   if (cachedData != null) {
@@ -128,7 +103,7 @@ export const createStdout = async (req: Request, res: Response) => {
         success: true,
         data: response.data,
       });
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,

@@ -22,7 +22,7 @@ export const submissionSchema = z.object({
 
 export const judge0Schema = z.object({
   languageId: z.nativeEnum(LANGUAGES),
-  sourceCode: z.string().min(1),
+  code: z.string().min(1),
   stdin: z.string().min(0),
 });
 

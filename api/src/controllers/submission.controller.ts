@@ -57,11 +57,13 @@ export const getSubmission = async (req: Request, res: Response) => {
 };
 
 export const getSubmissions = async (req: Request, res: Response) => {
+  await client.connect();
+
   const key = req.originalUrl;
   const cachedData = await client.get(key).catch((err) => {
-    res
+    return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: "Internal Server Error" });
+      .json({ error: `Redis Error: ${err}` });
   });
 
   if (cachedData != null) {
