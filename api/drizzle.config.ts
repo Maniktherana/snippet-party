@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export default {
-  schema: "./src/db/schema.ts",
+  schema: "./src/db/mysql/schema.ts",
   out: "./src/db/migrations",
   dbCredentials: {
     uri: process.env.MYSQL_URL!,
