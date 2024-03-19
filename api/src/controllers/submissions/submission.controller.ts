@@ -3,10 +3,11 @@ import {
   insertSubmissionSchema,
   langauges,
   submissions,
-} from "../../db/schema";
-import { db } from "../../db";
+} from "../../db/mysql/schema";
+import { db } from "../../db/mysql";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
+import { client } from "../../db/redis";
 
 export const createSubmission = async (req: Request, res: Response) => {
   let {
@@ -67,18 +68,34 @@ export const getSubmission = async (req: Request, res: Response) => {
 };
 
 export const getSubmissions = async (req: Request, res: Response) => {
-  try {
-    const allSubmissions = await db.select().from(submissions);
+  const key = req.originalUrl;
+  const cachedData = await client.get(key).catch((err) => {
+    res
+      .status(StatusCodes.INTERNAL_SERVER_ERROR)
+      .json({ error: "Internal Server Error" });
+  });
 
-    return res
-      .status(StatusCodes.OK)
-      .json({ success: true, data: allSubmissions });
-  } catch (error) {
-    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      success: false,
-      data: null,
-      message: "Unable to get submissions",
-    });
+  if (cachedData != null) {
+    console.log("Cache hit");
+    res.status(StatusCodes.OK).send(cachedData);
+  } else {
+    console.log("Cache miss");
+    try {
+      const allSubmissions = await db.select().from(submissions);
+      const response = { success: true, data: allSubmissions };
+
+      // Cache response
+      await client.set(key, JSON.stringify(response));
+      await client.expire(key, 60);
+
+      return res.status(StatusCodes.OK).json(response);
+    } catch (error) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        success: false,
+        data: null,
+        message: "Unable to get submissions",
+      });
+    }
   }
 };
 
