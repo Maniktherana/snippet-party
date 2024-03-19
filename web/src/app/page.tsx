@@ -167,8 +167,8 @@ export default function Home() {
     <main className="max-w-screen-xl mx-auto font-sans">
       <Card className="mt-[5rem] mx-3">
         <CardHeader>
-          <CardTitle>Add your code</CardTitle>
-          <CardDescription>Add your code to this site.</CardDescription>
+          <CardTitle>Create a snippet</CardTitle>
+          <CardDescription>Add your snippet to this site.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>

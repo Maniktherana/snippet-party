@@ -31,7 +31,7 @@ const Navbar = () => {
       <Link href="/">
         <div className="transition-colors inline-flex gap-3 items-center justify-center whitespace-nowrap rounded-md text-sm font-medium text-muted-foreground h-7 px-3 cursor-pointer hover:text-foreground">
           <IconTrain size="20" stroke="1.5" />
-          <span className="">Code Party</span>
+          <span className="">Snippet Party</span>
         </div>
       </Link>
       <div className="flex flex-row items-center justify-center gap-5">
