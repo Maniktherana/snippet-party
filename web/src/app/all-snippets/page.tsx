@@ -12,7 +12,7 @@ async function getData(): Promise<Snippet[]> {
     });
 
     const data = await response.json();
-    return data.data.data;
+    return data.data;
   } catch (error) {
     return [];
   }
