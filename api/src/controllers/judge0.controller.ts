@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import { client } from "../db/redis";
-import { Judge0, judge0Schema } from "../schemas/index";
+import { Judge0 } from "../schemas/index";
 
 dotenv.config();
 

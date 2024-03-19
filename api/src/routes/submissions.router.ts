@@ -9,7 +9,7 @@ import {
 } from "../controllers/submission.controller";
 
 import { validateData } from "../middlewares/validation";
-import { submissionSchema } from "../schemas/submissionsSchema";
+import { submissionSchema } from "../schemas";
 
 const router = Router();
 
