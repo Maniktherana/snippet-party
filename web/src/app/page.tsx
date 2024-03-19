@@ -60,7 +60,6 @@ const codePlaceholder = `def sum(a, b):
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
-  const [returnedData, setReturnedData] = useState("");
   const [loadingState, setLoadingState] = useState("Running Code");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -83,9 +82,10 @@ export default function Home() {
     }
 
     let token;
+    let stdout;
     try {
       setLoadingState("Running Code");
-      const addResponse = await fetch(
+      const getToken = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_URL}/judge0/add`,
         {
           method: "POST",
@@ -100,22 +100,25 @@ export default function Home() {
         }
       );
 
-      token = await addResponse.json();
-      const getResponse = await fetch(
+      token = await getToken.json();
+      const getStdout = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_URL}/judge0/get`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(token),
+          body: JSON.stringify(token.data),
         }
       );
 
-      const data = await getResponse.json();
-      setReturnedData(data.data);
+      stdout = await getStdout.json();
+      stdout = stdout.data;
     } catch (error) {
       setLoading(false);
+      return toast.error(
+        "An error occurred while submitting your code. Please try again later"
+      );
     }
 
     try {
@@ -130,7 +133,7 @@ export default function Home() {
           language: values.language,
           code: codeBase64,
           stdin: stdinBase64,
-          stdout: returnedData,
+          stdout: stdout,
         }),
       });
 
@@ -153,12 +156,13 @@ export default function Home() {
       });
       setLoading(false);
     } catch (error) {
-      toast.error(
+      setLoading(false);
+      return toast.error(
         "An error occurred while submitting your code. Please try again later"
       );
-      setLoading(false);
     }
   }
+
   return (
     <main className="max-w-screen-xl mx-auto font-sans">
       <Card className="mt-[5rem] mx-3">
