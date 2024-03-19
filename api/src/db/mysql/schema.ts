@@ -9,10 +9,10 @@ import {
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
 const languages = mysqlEnum("languages", [
-  "Java",
-  "Python",
-  "JavaScript",
-  "C++",
+  "JavaScript (Node.js 18.15.0)",
+  "Python (3.11.2)",
+  "Java (OpenJDK 13.0.1)",
+  "C++ (GCC 9.2.0)",
 ]);
 
 export const submissions = mysqlTable("submissions", {
