@@ -3,11 +3,11 @@ import {
   insertSubmissionSchema,
   langauges,
   submissions,
-} from "../../db/mysql/schema";
-import { db } from "../../db/mysql";
+} from "../db/mysql/schema";
+import { db } from "../db/mysql";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
-import { client } from "../../db/redis";
+import { client } from "../db/redis";
 
 export const createSubmission = async (req: Request, res: Response) => {
   let {

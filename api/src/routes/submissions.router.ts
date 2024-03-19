@@ -6,7 +6,7 @@ import {
   getSubmission,
   getSubmissions,
   updateSubmission,
-} from "../controllers/submissions/submission.controller";
+} from "../controllers/submission.controller";
 
 import { validateData } from "../middlewares/validation";
 import { submissionSchema } from "../schemas/submissionsSchema";

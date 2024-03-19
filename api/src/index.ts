@@ -5,13 +5,18 @@ import dotenv from "dotenv";
 
 // routes
 import submissionRoutes from "./routes/submissions.router";
+import judge0Routes from "./routes/judge0.router";
 
 const app = express();
 dotenv.config();
 
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001", "*"],
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "https://judge0-ce.p.rapidapi.com/submissions/",
+    ],
   })
 );
 
@@ -22,6 +27,7 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 3001;
 
 app.use("/submissions", submissionRoutes);
+app.use("/judge0", judge0Routes);
 
 app.listen(PORT, () => {
   console.log(`App running on PORT ${PORT}`);
