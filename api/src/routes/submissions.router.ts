@@ -3,7 +3,7 @@ import { Router } from "express";
 import {
   createSubmission,
   deleteSubmission,
-  getSubmission,
+  getSubmissionById,
   getSubmissions,
   updateSubmission,
 } from "../controllers/submission.controller";
@@ -15,7 +15,7 @@ const router = Router();
 
 router.post("/", validateData(submissionSchema), createSubmission);
 router.get("/", getSubmissions);
-router.get("/:submissionsId", getSubmission);
+router.get("/:submissionsId", getSubmissionById);
 router.patch(
   "/:submissionsId",
   validateData(submissionSchema),

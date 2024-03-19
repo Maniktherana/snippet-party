@@ -7,7 +7,7 @@ import {
 import { db } from "../db/mysql";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
-import { client } from "../db/redis";
+import { redis } from "../db/redis";
 import { Submission } from "../schemas";
 
 export const createSubmission = async (req: Request, res: Response) => {
@@ -26,7 +26,7 @@ export const createSubmission = async (req: Request, res: Response) => {
 
     return res.status(StatusCodes.CREATED).json({
       success: true,
-      data: { data },
+      data: data,
       message: "Added Successfully",
     });
   } catch (error) {
@@ -36,7 +36,7 @@ export const createSubmission = async (req: Request, res: Response) => {
   }
 };
 
-export const getSubmission = async (req: Request, res: Response) => {
+export const getSubmissionById = async (req: Request, res: Response) => {
   const { submissionId } = req.params;
   try {
     const submissionById = await db
@@ -44,26 +44,28 @@ export const getSubmission = async (req: Request, res: Response) => {
       .from(submissions)
       .where(eq(submissions.id, Number(submissionId)));
 
-    return res
-      .status(StatusCodes.OK)
-      .json({ success: true, data: submissionById });
+    return res.status(StatusCodes.OK).json({
+      success: true,
+      data: submissionById,
+      message: "Added Successfully",
+    });
   } catch (error) {
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: null,
-      message: "Unable to get submissions",
+      message: "Unable to get submission",
     });
   }
 };
 
 export const getSubmissions = async (req: Request, res: Response) => {
-  await client.connect();
+  await redis.connect();
 
   const key = req.originalUrl;
-  const cachedData = await client.get(key).catch((err) => {
+  const cachedData = await redis.get(key).catch((err) => {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ error: `Redis Error: ${err}` });
+      .json({ success: false, data: null, message: `Redis Error: ${err}` });
   });
 
   if (cachedData != null) {
@@ -73,19 +75,25 @@ export const getSubmissions = async (req: Request, res: Response) => {
     console.log("Cache miss");
     try {
       const allSubmissions = await db.select().from(submissions);
-      const response = { success: true, data: allSubmissions };
+      const response = { success: true, data: allSubmissions, message: null };
 
       // Cache response
-      await client.set(key, JSON.stringify(response));
-      await client.expire(key, 60);
+      await redis.set(key, JSON.stringify(response));
+      await redis.expire(key, 60);
 
-      return res.status(StatusCodes.OK).json(response);
+      return res.status(StatusCodes.OK).json({
+        success: true,
+        data: response,
+        message: "Fetched Successfully",
+      });
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         data: null,
         message: "Unable to get submissions",
       });
+    } finally {
+      await redis.disconnect();
     }
   }
 };
@@ -122,17 +130,17 @@ export const updateSubmission = async (req: Request, res: Response) => {
       });
     }
 
-    await db
+    const data = await db
       .update(submissions)
       .set(updatedSubmission)
       .where(eq(submissions.id, Number(submissionId)));
     return res
       .status(StatusCodes.OK)
-      .json({ success: true, message: "Updated Successfully" });
+      .json({ success: true, data: data, message: "Updated Successfully" });
   } catch (error) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: true, message: "Cannot Update" });
+      .json({ success: false, data: null, message: "Cannot Update" });
   }
 };
 
@@ -145,10 +153,10 @@ export const deleteSubmission = async (req: Request, res: Response) => {
       .where(eq(submissions.id, Number(submissionId)));
     return res
       .status(StatusCodes.OK)
-      .json({ success: true, message: "Delete Successfully" });
+      .json({ success: true, data: null, message: "Delete Successfully" });
   } catch (error) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: true, message: "Cannot Delete" });
+      .json({ success: false, data: null, message: "Cannot Delete" });
   }
 };
