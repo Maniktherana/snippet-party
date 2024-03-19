@@ -3,15 +3,12 @@ import { StatusCodes } from "http-status-codes";
 import { Request, Response } from "express";
 import dotenv from "dotenv";
 import { client } from "../db/redis";
+import { Judge0, judge0Schema } from "../schemas/index";
 
 dotenv.config();
 
 export const runJudge0 = async (req: Request, res: Response) => {
-  const {
-    languageId,
-    sourceCode,
-    stdin,
-  }: { languageId: number; sourceCode: string; stdin: string } = req.body;
+  const { languageId, sourceCode, stdin }: Judge0 = req.body;
 
   try {
     const createResponse: AxiosResponse = await axios.post("/createStdout", {
@@ -86,11 +83,7 @@ export const getStdout = async (req: Request, res: Response) => {
 };
 
 export const createStdout = async (req: Request, res: Response) => {
-  const {
-    languageId,
-    sourceCode,
-    stdin,
-  }: { languageId: number; sourceCode: string; stdin: string } = req.body;
+  const { languageId, sourceCode, stdin }: Judge0 = req.body;
 
   const options = {
     method: "POST",

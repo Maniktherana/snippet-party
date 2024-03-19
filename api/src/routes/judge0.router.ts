@@ -5,10 +5,12 @@ import {
   getStdout,
   runJudge0,
 } from "../controllers/judge0.controller";
+import { validateData } from "../middlewares/validation";
+import { judge0Schema } from "../schemas";
 
 const router = Router();
 
-router.post("/add", createStdout);
+router.post("/add", validateData(judge0Schema), createStdout);
 router.get("/get", getStdout);
 router.post("/", runJudge0);
 

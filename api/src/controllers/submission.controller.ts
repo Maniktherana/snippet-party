@@ -8,21 +8,10 @@ import { db } from "../db/mysql";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
 import { client } from "../db/redis";
+import { Submission } from "../schemas";
 
 export const createSubmission = async (req: Request, res: Response) => {
-  let {
-    username,
-    language,
-    code,
-    stdin,
-    stdout,
-  }: {
-    username: string;
-    language: langauges;
-    code: string;
-    stdin: string;
-    stdout?: string;
-  } = req.body;
+  let { username, language, code, stdin, stdout }: Submission = req.body;
 
   const submission = insertSubmissionSchema.parse({
     username,
