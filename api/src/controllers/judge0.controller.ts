@@ -34,16 +34,18 @@ export const getStdout = async (req: Request, res: Response) => {
     res.status(StatusCodes.OK).send(cachedData);
   } else {
     try {
-      const response = await axios.get(url, { params, headers });
+      const data = await axios.get(url, { params, headers });
+      const response = {
+        success: true,
+        data: data.data.stdout,
+        message: "Submission retrieved successfully",
+      };
 
-      await redis.set(key, JSON.stringify(response.data));
+      // Cache response
+      await redis.set(key, JSON.stringify(response));
       await redis.expire(key, 60);
 
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        data: response.data.stdout,
-        message: "Submission retrieved successfully",
-      });
+      return res.status(StatusCodes.OK).json(response);
     } catch (error: any) {
       console.error(error);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
@@ -93,17 +95,18 @@ export const createStdout = async (req: Request, res: Response) => {
   } else {
     console.log("Cache miss");
     try {
-      const response = await axios.post(url, body, { headers, params });
+      const data = await axios.post(url, body, { headers, params });
+      const response = {
+        success: true,
+        data: data.data,
+        message: "Submitted Successfully",
+      };
 
       // Cache response
-      await redis.set(key, JSON.stringify(response.data));
+      await redis.set(key, JSON.stringify(response));
       await redis.expire(key, 60);
 
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        data: response.data,
-        message: "Submitted Successfully",
-      });
+      return res.status(StatusCodes.OK).json(response);
     } catch (error: any) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,

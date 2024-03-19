@@ -75,17 +75,17 @@ export const getSubmissions = async (req: Request, res: Response) => {
     console.log("Cache miss");
     try {
       const allSubmissions = await db.select().from(submissions);
-      const response = { success: true, data: allSubmissions, message: null };
+      const response = {
+        success: true,
+        data: allSubmissions,
+        message: "Fetched Successfully",
+      };
 
       // Cache response
       await redis.set(key, JSON.stringify(response));
       await redis.expire(key, 60);
 
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        data: response,
-        message: "Fetched Successfully",
-      });
+      return res.status(StatusCodes.OK).json(response);
     } catch (error) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
