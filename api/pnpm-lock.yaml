@@ -32,6 +32,9 @@ dependencies:
   mysql2:
     specifier: ^3.9.2
     version: 3.9.2
+  object-hash:
+    specifier: ^3.0.0
+    version: 3.0.0
   redis:
     specifier: ^4.6.13
     version: 4.6.13
@@ -52,6 +55,9 @@ devDependencies:
   '@types/node':
     specifier: ^20.11.28
     version: 20.11.28
+  '@types/object-hash':
+    specifier: ^3.0.6
+    version: 3.0.6
   drizzle-kit:
     specifier: ^0.20.14
     version: 0.20.14
@@ -633,6 +639,10 @@ packages:
     resolution: {integrity: sha512-M/GPWVS2wLkSkNHVeLkrF2fD5Lx5UC4PxA0uZcKc6QqbIQUJyW1jVjueJYi1z8n0I5PxYrtpnPnWglE+y9A0KA==}
     dependencies:
       undici-types: 5.26.5
+    dev: true
+
+  /@types/object-hash@3.0.6:
+    resolution: {integrity: sha512-fOBV8C1FIu2ELinoILQ+ApxcUKz4ngq+IWUYrxSGjXzzjUALijilampwkMgEtJ+h2njAW3pi853QpzNVCHB73w==}
     dev: true
 
   /@types/qs@6.9.12:
@@ -1701,6 +1711,11 @@ packages:
   /object-assign@4.1.1:
     resolution: {integrity: sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==}
     engines: {node: '>=0.10.0'}
+    dev: false
+
+  /object-hash@3.0.0:
+    resolution: {integrity: sha512-RSn9F68PjH9HqtltsSnqYC1XXoWe9Bju5+213R98cNGttag9q9yAOTzdbsqvIa7aNm5WffBZFpWYr2aWrklWAw==}
+    engines: {node: '>= 6'}
     dev: false
 
   /object-inspect@1.13.1:

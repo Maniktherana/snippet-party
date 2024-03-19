@@ -7,7 +7,6 @@ import {
 import { db } from "../db/mysql";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
-import { redis } from "../db/redis";
 import { Submission } from "../schemas";
 
 export const createSubmission = async (req: Request, res: Response) => {
@@ -59,42 +58,21 @@ export const getSubmissionById = async (req: Request, res: Response) => {
 };
 
 export const getSubmissions = async (req: Request, res: Response) => {
-  await redis.connect();
+  try {
+    const allSubmissions = await db.select().from(submissions);
+    const response = {
+      success: true,
+      data: allSubmissions,
+      message: "Fetched Successfully",
+    };
 
-  const key = req.originalUrl;
-  const cachedData = await redis.get(key).catch((err) => {
-    return res
-      .status(StatusCodes.INTERNAL_SERVER_ERROR)
-      .json({ success: false, data: null, message: `Redis Error: ${err}` });
-  });
-
-  if (cachedData != null) {
-    console.log("Cache hit");
-    res.status(StatusCodes.OK).send(cachedData);
-  } else {
-    console.log("Cache miss");
-    try {
-      const allSubmissions = await db.select().from(submissions);
-      const response = {
-        success: true,
-        data: allSubmissions,
-        message: "Fetched Successfully",
-      };
-
-      // Cache response
-      await redis.set(key, JSON.stringify(response));
-      await redis.expire(key, 60);
-
-      return res.status(StatusCodes.OK).json(response);
-    } catch (error) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-        success: false,
-        data: null,
-        message: "Unable to get submissions",
-      });
-    } finally {
-      await redis.disconnect();
-    }
+    return res.status(StatusCodes.OK).json(response);
+  } catch (error) {
+    return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+      success: false,
+      data: null,
+      message: "Unable to get submissions",
+    });
   }
 };
 

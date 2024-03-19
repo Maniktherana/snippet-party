@@ -6,25 +6,35 @@ import dotenv from "dotenv";
 // routes
 import submissionRoutes from "./routes/submissions.router";
 import judge0Routes from "./routes/judge0.router";
+import { initializeRedisClient } from "./middlewares/redis";
 
-const app = express();
-dotenv.config();
+async function initializeExpressServer() {
+  const app = express();
+  // connect to Redis
+  await initializeRedisClient();
 
-app.use(
-  cors({
-    origin: "*",
-  })
-);
+  dotenv.config();
 
-app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+  app.use(
+    cors({
+      origin: "*",
+    })
+  );
 
-const PORT = process.env.PORT || 3001;
+  app.use(express.json());
+  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json());
 
-app.use("/submissions", submissionRoutes);
-app.use("/judge0", judge0Routes);
+  const PORT = process.env.PORT || 3001;
 
-app.listen(PORT, () => {
-  console.log(`App running on PORT ${PORT}`);
-});
+  app.use("/submissions", submissionRoutes);
+  app.use("/judge0", judge0Routes);
+
+  app.listen(PORT, () => {
+    console.log(`App running on PORT ${PORT}`);
+  });
+}
+
+initializeExpressServer()
+  .then()
+  .catch((e) => console.error(e));
