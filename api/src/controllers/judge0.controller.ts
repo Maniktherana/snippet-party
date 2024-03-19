@@ -9,17 +9,15 @@ dotenv.config();
 
 export const getStdout = async (req: Request, res: Response) => {
   const { token }: { token: string } = req.body;
-  const options = {
-    method: "GET",
-    url: `https://judge0-ce.p.rapidapi.com/submissions/${token}`,
-    params: {
-      base64_encoded: "true",
-      fields: "*",
-    },
-    headers: {
-      "X-RapidAPI-Key": process.env.X_RAPIAPI_KEY,
-      "X-RapidAPI-Host": process.env.X_RAPIAPI_HOST,
-    },
+
+  const url = `https://judge0-ce.p.rapidapi.com/submissions/${token}`;
+  const params = {
+    base64_encoded: "true",
+    fields: "*",
+  };
+  const headers = {
+    "X-RapidAPI-Key": process.env.X_RAPIAPI_KEY,
+    "X-RapidAPI-Host": process.env.X_RAPIAPI_HOST,
   };
 
   const key = token;
@@ -34,10 +32,9 @@ export const getStdout = async (req: Request, res: Response) => {
     res.status(StatusCodes.OK).send(cachedData);
   } else {
     try {
-      const response = await axios.request(options);
+      const response = await axios.get(url, { params, headers });
 
-      // Cache response
-      await client.set(key, JSON.stringify(response));
+      await client.set(key, JSON.stringify(response.data));
       await client.expire(key, 60);
 
       return res.status(StatusCodes.OK).json({
@@ -58,24 +55,22 @@ export const getStdout = async (req: Request, res: Response) => {
 export const createStdout = async (req: Request, res: Response) => {
   const { languageId, code, stdin }: Judge0 = req.body;
 
-  const options = {
-    method: "POST",
-    url: "https://judge0-ce.p.rapidapi.com/submissions",
-    params: {
-      base64_encoded: "true",
-      fields: "*",
-    },
-    headers: {
-      "content-type": "application/json",
-      "Content-Type": "application/json",
-      "X-RapidAPI-Key": process.env.X_RAPIAPI_KEY,
-      "X-RapidAPI-Host": process.env.X_RAPIAPI_HOST,
-    },
-    body: {
-      language_id: languageId,
-      source_code: code,
-      stdin: stdin,
-    },
+  const body = {
+    language_id: languageId,
+    source_code: code,
+    stdin: stdin,
+  };
+
+  const headers = {
+    "content-type": "application/json",
+    "X-RapidAPI-Key": process.env.X_RAPIAPI_KEY,
+    "X-RapidAPI-Host": process.env.X_RAPIAPI_HOST,
+  };
+
+  const url = "https://judge0-ce.p.rapidapi.com/submissions";
+  const params = {
+    base64_encoded: "true",
+    fields: "*",
   };
 
   await client.connect();
@@ -93,18 +88,15 @@ export const createStdout = async (req: Request, res: Response) => {
   } else {
     console.log("Cache miss");
     try {
-      const response = await axios.request(options);
+      const response = await axios.post(url, body, { headers, params });
 
       // Cache response
-      await client.set(key, JSON.stringify(response));
+      await client.set(key, JSON.stringify(response.data));
       await client.expire(key, 60);
 
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        data: response.data,
-      });
+      return res.status(StatusCodes.OK).json(response.data);
     } catch (error: any) {
-      console.error(error);
+      console.error(error.response);
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
         success: false,
         data: null,
