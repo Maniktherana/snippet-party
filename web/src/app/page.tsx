@@ -114,40 +114,54 @@ export default function Home() {
 
       stdout = await getStdout.json();
       stdout = stdout.data;
+      if (stdout === null || stdout === undefined) {
+        throw new Error("Received null or undefined from Judge0");
+      }
     } catch (error) {
       setLoading(false);
       return toast.error(
-        "An error occurred while submitting your code. Please try again later"
+        "An error occurred while running your code. Please try again later"
       );
     }
 
     try {
       setLoadingState("Submitting");
-      await fetch(`${env.NEXT_PUBLIC_BACKEND_URL}/submissions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: values.username,
-          language: values.language,
-          code: codeBase64,
-          stdin: stdinBase64,
-          stdout: stdout,
-        }),
-      });
-
-      toast.success(
-        <div className="flex flex-row justify-between items-center gap-3 w-full">
-          <p>Code submitted successfully</p>
-          <Button size="ln" onClick={() => toast.dismiss()} asChild>
-            <Link href="/all-snippets">View</Link>
-          </Button>
-        </div>,
+      const response = await fetch(
+        `${env.NEXT_PUBLIC_BACKEND_URL}/submissions`,
         {
-          duration: 5000,
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: values.username,
+            language: values.language,
+            code: codeBase64,
+            stdin: stdinBase64,
+            stdout: stdout,
+          }),
         }
       );
+
+      if (response.ok) {
+        toast.success(
+          <div className="flex flex-row justify-between items-center gap-3 w-full">
+            <p>Code submitted successfully</p>
+            <Button size="ln" onClick={() => toast.dismiss()} asChild>
+              <Link href="/all-snippets">View</Link>
+            </Button>
+          </div>,
+          {
+            duration: 5000,
+          }
+        );
+      }
+    } catch (error) {
+      setLoading(false);
+      return toast.error(
+        "An error occurred while submitting your code. Please try again later"
+      );
+    } finally {
       form.reset({
         username: "",
         language: "JavaScript (Node.js 18.15.0)",
@@ -155,11 +169,6 @@ export default function Home() {
         stdin: "",
       });
       setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      return toast.error(
-        "An error occurred while submitting your code. Please try again later"
-      );
     }
   }
 
@@ -201,7 +210,7 @@ export default function Home() {
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a langauge" />
+                          <SelectValue placeholder="JavaScript (Node.js 18.15.0)" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
