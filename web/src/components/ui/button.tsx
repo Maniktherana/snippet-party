@@ -22,7 +22,7 @@ const buttonVariants = cva(
         link: "text-muted-foreground hover:text-foreground",
       },
       size: {
-        default: "h-10 px-4 py-2",
+        default: "h-9 px-5 rounded-lg",
         sm: "h-7 rounded-lg px-1.5",
         ln: "h-7 rounded-lg px-3",
         lg: "h-11 rounded-md px-8",
