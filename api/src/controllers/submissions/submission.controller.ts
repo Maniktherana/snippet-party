@@ -4,7 +4,7 @@ import {
   langauges,
   submissions,
 } from "../../db/schema";
-import { db } from "../../db/setup";
+import { db } from "../../db";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
 
