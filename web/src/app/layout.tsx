@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import Navbar from "@/components/navbar";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+
+import "./globals.css";
+
+import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme-provider";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -22,6 +25,7 @@ export default function RootLayout({
           <Navbar />
           {children}
           <div className="gradient-bg"></div>
+          <Toaster position="top-center" />
         </ThemeProvider>
       </body>
     </html>

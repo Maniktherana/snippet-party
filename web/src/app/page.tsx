@@ -36,6 +36,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { env } from "@/env.mjs";
+import { toast } from "sonner";
+import Link from "next/link";
 
 const formSchema = z.object({
   username: z.string().min(5, {
@@ -58,17 +60,21 @@ const codePlaceholder = `def sum(a, b):
 
 export default function Home() {
   const [loading, setLoading] = useState(false);
+  const [returnedData, setReturnedData] = useState("");
+  const [loadingState, setLoadingState] = useState("Running Code");
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      language: "JavaScript (Node.js 18.15.0)",
+      code: "",
       stdin: "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-
+    setLoadingState("Parsing");
     // Convert code and stdin to base64
     const codeBase64 = btoa(values.code);
     let stdinBase64 = "";
@@ -76,8 +82,10 @@ export default function Home() {
       stdinBase64 = btoa(values.stdin);
     }
 
+    let token;
     try {
-      const response = await fetch(
+      setLoadingState("Running Code");
+      const addResponse = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_URL}/judge0/add`,
         {
           method: "POST",
@@ -92,15 +100,63 @@ export default function Home() {
         }
       );
 
-      if (response.ok) {
-        console.log(response.body);
-      } else {
-        const data = await response.json();
-        console.log(data);
-      }
+      token = await addResponse.json();
+      const getResponse = await fetch(
+        `${env.NEXT_PUBLIC_BACKEND_URL}/judge0/get`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(token),
+        }
+      );
+
+      const data = await getResponse.json();
+      setReturnedData(data.data);
+    } catch (error) {
+      setLoading(false);
+    }
+
+    try {
+      setLoadingState("Submitting");
+      await fetch(`${env.NEXT_PUBLIC_BACKEND_URL}/submissions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: values.username,
+          language: values.language,
+          code: codeBase64,
+          stdin: stdinBase64,
+          stdout: returnedData,
+        }),
+      });
+
+      toast.success(
+        <div className="flex flex-row justify-between items-center gap-3 w-full">
+          <p>Code submitted successfully</p>
+          <Button size="ln" onClick={() => toast.dismiss()} asChild>
+            <Link href="/all-snippets">View</Link>
+          </Button>
+        </div>,
+        {
+          duration: 5000,
+        }
+      );
+      form.reset({
+        username: "",
+        language: "JavaScript (Node.js 18.15.0)",
+        code: "",
+        stdin: "",
+      });
       setLoading(false);
     } catch (error) {
-      console.error("An unexpected error occurred:", error);
+      toast.error(
+        "An error occurred while submitting your code. Please try again later"
+      );
+      setLoading(false);
     }
   }
   return (
@@ -204,10 +260,11 @@ export default function Home() {
                 )}
               />
               <div className="w-full flex justify-end">
-                <Button className="relative" disabled={loading}>
+                <Button disabled={loading}>
                   {loading ? (
-                    <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex items-center justify-center gap-3">
                       <AnimatedSpinner className="h-6 w-6" />
+                      <span>{loadingState}</span>
                     </div>
                   ) : (
                     <span>Submit</span>
