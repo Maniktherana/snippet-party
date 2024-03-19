@@ -7,6 +7,6 @@ import { judge0Schema } from "../schemas";
 const router = Router();
 
 router.post("/add", validateData(judge0Schema), createStdout);
-router.get("/get", getStdout);
+router.post("/get", getStdout);
 
 export default router;

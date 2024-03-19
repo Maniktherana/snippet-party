@@ -39,7 +39,12 @@ export const getStdout = async (req: Request, res: Response) => {
 
       return res.status(StatusCodes.OK).json({
         success: true,
-        data: response.data,
+        data: {
+          code: response.data.source_code,
+          languageId: response.data.language_id,
+          stdin: response.data.stdin,
+          stdout: response.data.stdout,
+        },
       });
     } catch (error: any) {
       console.error(error);
