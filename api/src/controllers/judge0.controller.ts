@@ -29,6 +29,13 @@ export const getStdout = async (req: Request, res: Response) => {
 
     return res.status(StatusCodes.OK).json(response);
   } catch (error: any) {
+    if (error.response && error.response.status === 429) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({
+        success: false,
+        data: null,
+        message: `Judge0 error: Too many requests`,
+      });
+    }
     console.error(error);
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
@@ -69,6 +76,13 @@ export const createStdout = async (req: Request, res: Response) => {
 
     return res.status(StatusCodes.OK).json(response);
   } catch (error: any) {
+    if (error.response && error.response.status === 429) {
+      return res.status(StatusCodes.TOO_MANY_REQUESTS).json({
+        success: false,
+        data: null,
+        message: `Judge0 error: Too many requests`,
+      });
+    }
     return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
       success: false,
       data: null,
