@@ -9,6 +9,7 @@ async function getData(): Promise<Snippet[]> {
       headers: {
         "Content-Type": "application/json",
       },
+      cache: "no-store",
     });
 
     const data = await response.json();
