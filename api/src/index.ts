@@ -6,7 +6,10 @@ import dotenv from "dotenv";
 // routes
 import submissionRoutes from "./routes/submissions.router";
 import judge0Routes from "./routes/judge0.router";
-import { initializeRedisClient } from "./middlewares/redis";
+import {
+  initializeRedisClient,
+  redisCachingMiddleware,
+} from "./middlewares/redis";
 
 async function initializeExpressServer() {
   const app = express();
@@ -27,8 +30,8 @@ async function initializeExpressServer() {
 
   const PORT = process.env.PORT || 3001;
 
-  app.use("/submissions", submissionRoutes);
-  app.use("/judge0", judge0Routes);
+  app.use("/submissions", redisCachingMiddleware(), submissionRoutes);
+  app.use("/judge0", redisCachingMiddleware(), judge0Routes);
 
   app.listen(PORT, () => {
     console.log(`App running on PORT ${PORT}`);

@@ -15,7 +15,7 @@ import { redisCachingMiddleware } from "../middlewares/redis";
 const router = Router();
 
 router.post("/", validateData(submissionSchema), createSubmission);
-router.get("/", redisCachingMiddleware(), getSubmissions);
+router.get("/", getSubmissions);
 router.get("/:submissionsId", getSubmissionById);
 router.patch(
   "/:submissionsId",

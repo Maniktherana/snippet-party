@@ -1,6 +1,9 @@
 import { createClient } from "redis";
 import hash from "object-hash";
 import { Request, Response, NextFunction } from "express";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 let redisClient: any = undefined;
 
@@ -16,12 +19,13 @@ async function initializeRedisClient(): Promise<void> {
 
     try {
       await redisClient.connect();
+      // get all keys from redis
+      const keys = await redisClient.keys("*");
+      console.log(`Redis keys: ${keys}`);
       console.log(`Connected to Redis successfully!`);
     } catch (e) {
       console.error(`Connection to Redis failed with error:`);
       console.error(e);
-    } finally {
-      await redisClient.disconnect();
     }
   }
 }
@@ -71,12 +75,14 @@ function redisCachingMiddleware(
       const key = requestToKey(req);
       const cachedValue = await readData(key);
       if (cachedValue) {
+        console.log("cache hit");
         try {
           return res.json(JSON.parse(cachedValue));
         } catch {
           return res.send(cachedValue);
         }
       } else {
+        console.log("cache miss");
         // override how res.send behaves to introduce the caching logic
         const oldSend = res.send;
         res.send = function (data: any) {
