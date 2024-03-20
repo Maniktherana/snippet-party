@@ -83,16 +83,12 @@ export default function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("username")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm backdrop-blur-lg"
+          className="max-w-sm backdrop-blur-lg bg-card"
         />
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="outline"
-                size="default"
-                className="ml-auto backdrop-blur-lg"
-              >
+              <Button variant="default" size="default" className="ml-auto">
                 Columns
               </Button>
             </DropdownMenuTrigger>
@@ -122,10 +118,10 @@ export default function DataTable<TData, TValue>({
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="bg-card">
                 {headerGroup.headers.map((header) => {
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead key={header.id} className="text-card-foreground">
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -170,20 +166,18 @@ export default function DataTable<TData, TValue>({
       </div>
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
-          variant="outline"
+          variant="default"
           size="default"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
-          className="backdrop-blur-lg"
         >
           Previous
         </Button>
         <Button
-          variant="outline"
+          variant="default"
           size="default"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
-          className="backdrop-blur-lg"
         >
           Next
         </Button>

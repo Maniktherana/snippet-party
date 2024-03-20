@@ -47,6 +47,7 @@ export const columns: ColumnDef<Snippet>[] = [
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="text-card-foreground"
         >
           Language
           <ArrowUpDown className="ml-2 h-4 w-4" />
