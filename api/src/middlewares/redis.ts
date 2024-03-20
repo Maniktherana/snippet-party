@@ -19,9 +19,6 @@ async function initializeRedisClient(): Promise<void> {
 
     try {
       await redisClient.connect();
-      // get all keys from redis
-      const keys = await redisClient.keys("*");
-      console.log(`Redis keys: ${keys}`);
       console.log(`Connected to Redis successfully!`);
     } catch (e) {
       console.error(`Connection to Redis failed with error:`);
