@@ -74,7 +74,7 @@ export default function Home() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
     setLoadingState("Parsing");
-    // Convert code and stdin to base64
+
     const codeBase64 = btoa(values.code);
     let stdinBase64 = "";
     if (values.stdin) {
@@ -83,9 +83,10 @@ export default function Home() {
 
     let token;
     let stdout;
+
     try {
       setLoadingState("Running Code");
-      const getToken = await fetch(
+      const getTokenResponse = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_URL}/judge0/add`,
         {
           method: "POST",
@@ -100,8 +101,20 @@ export default function Home() {
         }
       );
 
-      token = await getToken.json();
-      const getStdout = await fetch(
+      if (!getTokenResponse.ok) {
+        if (getTokenResponse.status === 429) {
+          throw new Error("Judge0 API limit reached. Please try again later.");
+        }
+        throw new Error("Failed to get token from Judge0");
+      }
+      token = await getTokenResponse.json();
+    } catch (error: any) {
+      setLoading(false);
+      return toast.error(error.message);
+    }
+
+    try {
+      const getStdoutResponse = await fetch(
         `${env.NEXT_PUBLIC_BACKEND_URL}/judge0/get`,
         {
           method: "POST",
@@ -112,16 +125,17 @@ export default function Home() {
         }
       );
 
-      stdout = await getStdout.json();
-      stdout = stdout.data;
-      if (stdout === null || stdout === undefined) {
-        throw new Error("Received null or undefined from Judge0");
+      if (!getStdoutResponse.ok) {
+        if (getStdoutResponse.status === 429) {
+          throw new Error("Judge0 API limit reached. Please try again later.");
+        }
+        throw new Error("Failed to get stdout from Judge0");
       }
-    } catch (error) {
+
+      stdout = (await getStdoutResponse.json()).data;
+    } catch (error: any) {
       setLoading(false);
-      return toast.error(
-        "An error occurred while running your code. Please try again later"
-      );
+      return toast.error(`Get ${error.message}`);
     }
 
     try {
@@ -156,7 +170,7 @@ export default function Home() {
           }
         );
       }
-    } catch (error) {
+    } catch (error: any) {
       setLoading(false);
       return toast.error(
         "An error occurred while submitting your code. Please try again later"
