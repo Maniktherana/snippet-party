@@ -8,7 +8,7 @@
 
 ## About
 
-This project is to satisfy the following requirements for an [assignment]():
+This project is to satisfy the following requirements for an [assignment](https://x.com/striver_79/status/1769391241371029897?s=46):
 
 "Create a web application that facilitates the submission and display of code snippets. The application should consist of two pages:
 
