@@ -83,16 +83,20 @@ export default function DataTable<TData, TValue>({
           onChange={(event) =>
             table.getColumn("username")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm backdrop-blur-lg"
         />
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="default" className="ml-auto">
+              <Button
+                variant="outline"
+                size="default"
+                className="ml-auto backdrop-blur-lg"
+              >
                 Columns
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
+            <DropdownMenuContent align="end" className="backdrop-blur-lg">
               {table
                 .getAllColumns()
                 .filter((column) => column.getCanHide())
@@ -114,7 +118,7 @@ export default function DataTable<TData, TValue>({
           </DropdownMenu>
         </div>
       </div>
-      <div className="rounded-md border">
+      <div className="rounded-md border backdrop-blur-lg">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -170,6 +174,7 @@ export default function DataTable<TData, TValue>({
           size="default"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="backdrop-blur-lg"
         >
           Previous
         </Button>
@@ -178,6 +183,7 @@ export default function DataTable<TData, TValue>({
           size="default"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="backdrop-blur-lg"
         >
           Next
         </Button>

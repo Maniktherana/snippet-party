@@ -188,7 +188,7 @@ export default function Home() {
 
   return (
     <main className="max-w-screen-xl mx-auto font-sans">
-      <Card className="mt-[5rem] mx-3">
+      <Card className="mt-[5rem] mx-3 backdrop-blur-lg">
         <CardHeader>
           <CardTitle>Create a snippet</CardTitle>
           <CardDescription>Add your snippet to this site.</CardDescription>

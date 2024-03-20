@@ -28,7 +28,7 @@ const Menu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-[16rem] font-sans rounded-[0.75rem] bg-card text-foreground"
+        className="min-w-[16rem] backdrop-blur-lg font-sans rounded-[0.75rem] bg-card text-foreground"
       >
         <DropdownMenuItem asChild className="h-11 rounded-lg text-md gap-3">
           <Link href="/">
