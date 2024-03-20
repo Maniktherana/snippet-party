@@ -59,7 +59,11 @@ export const columns: ColumnDef<Snippet>[] = [
     header: "Code",
     cell: ({ row }) => {
       const code = atob(row.original.code);
-      return <code className="font-mono font-extralight">{code}</code>;
+      return (
+        <code className="font-mono font-extralight whitespace-pre-wrap	">
+          {code}
+        </code>
+      );
     },
   },
   {
@@ -67,7 +71,11 @@ export const columns: ColumnDef<Snippet>[] = [
     header: "Stdin",
     cell: ({ row }) => {
       const stdin = atob(row.original.stdin);
-      return <code className="font-mono font-extralight">{stdin}</code>;
+      return (
+        <code className="font-mono font-extralight whitespace-pre-wrap	">
+          {stdin}
+        </code>
+      );
     },
   },
   {
@@ -75,7 +83,11 @@ export const columns: ColumnDef<Snippet>[] = [
     header: "Stdout",
     cell: ({ row }) => {
       const stdout = atob(row.original.stdout);
-      return <code className="font-mono font-extralight">{stdout}</code>;
+      return (
+        <code className="font-mono font-extralight whitespace-pre-wrap	">
+          {stdout}
+        </code>
+      );
     },
   },
 ];
