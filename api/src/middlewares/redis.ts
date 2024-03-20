@@ -20,6 +20,8 @@ async function initializeRedisClient(): Promise<void> {
     } catch (e) {
       console.error(`Connection to Redis failed with error:`);
       console.error(e);
+    } finally {
+      await redisClient.disconnect();
     }
   }
 }
