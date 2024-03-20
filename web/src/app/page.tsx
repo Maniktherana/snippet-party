@@ -141,7 +141,7 @@ export default function Home() {
     try {
       setLoadingState("Submitting");
       const response = await fetch(
-        `${env.NEXT_PUBLIC_BACKEND_URL}/submissions`,
+        `${env.NEXT_PUBLIC_BACKEND_URL}/submissions/add`,
         {
           method: "POST",
           headers: {
