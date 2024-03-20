@@ -16,14 +16,14 @@ export const submissionSchema = z.object({
     "C++ (GCC 9.2.0)",
   ]),
   code: z.string().min(1),
-  stdin: z.string().min(0),
+  stdin: z.string().optional(),
   stdout: z.string().optional(),
 });
 
 export const judge0Schema = z.object({
   languageId: z.nativeEnum(LANGUAGES),
   code: z.string().min(1),
-  stdin: z.string().min(0),
+  stdin: z.string().optional(),
 });
 
 export type Submission = z.infer<typeof submissionSchema>;

@@ -13,7 +13,6 @@ import {
 
 async function initializeExpressServer() {
   const app = express();
-  // connect to Redis
   await initializeRedisClient();
 
   dotenv.config();
@@ -23,16 +22,14 @@ async function initializeExpressServer() {
       origin: "*",
     })
   );
-
   app.use(express.json());
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(bodyParser.json());
 
-  const PORT = process.env.PORT || 3001;
-
   app.use("/submissions", redisCachingMiddleware(), submissionRoutes);
   app.use("/judge0", redisCachingMiddleware(), judge0Routes);
 
+  const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`App running on PORT ${PORT}`);
   });

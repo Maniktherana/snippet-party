@@ -10,15 +10,14 @@ import {
 
 import { validateData } from "../middlewares/validation";
 import { submissionSchema } from "../schemas";
-import { redisCachingMiddleware } from "../middlewares/redis";
 
 const router = Router();
 
-router.post("/", validateData(submissionSchema), createSubmission);
+router.post("/add", validateData(submissionSchema), createSubmission);
 router.get("/", getSubmissions);
 router.get("/:submissionsId", getSubmissionById);
 router.patch(
-  "/:submissionsId",
+  "/update/:submissionsId",
   validateData(submissionSchema),
   updateSubmission
 );

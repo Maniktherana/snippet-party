@@ -1,9 +1,5 @@
 import { Request, Response } from "express";
-import {
-  insertSubmissionSchema,
-  langauges,
-  submissions,
-} from "../db/mysql/schema";
+import { insertSubmissionSchema, submissions } from "../db/mysql/schema";
 import { db } from "../db/mysql";
 import { eq } from "drizzle-orm";
 import { StatusCodes } from "http-status-codes";
@@ -37,6 +33,14 @@ export const createSubmission = async (req: Request, res: Response) => {
 
 export const getSubmissionById = async (req: Request, res: Response) => {
   const { submissionId } = req.params;
+  if (!submissionId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      data: null,
+      message: "Please provide submission_id to update",
+    });
+  }
+
   try {
     const submissionById = await db
       .select()
@@ -77,20 +81,16 @@ export const getSubmissions = async (req: Request, res: Response) => {
 };
 
 export const updateSubmission = async (req: Request, res: Response) => {
-  let {
-    username,
-    language,
-    code,
-    stdin,
-    stdout,
-  }: {
-    username: string;
-    language: langauges;
-    code: string;
-    stdin: string;
-    stdout?: string;
-  } = req.body;
+  let { username, language, code, stdin, stdout }: Submission = req.body;
   const { submissionId } = req.params;
+
+  if (!submissionId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      data: null,
+      message: "Please provide submission_id to update",
+    });
+  }
 
   const updatedSubmission = insertSubmissionSchema.parse({
     username,
@@ -101,13 +101,6 @@ export const updateSubmission = async (req: Request, res: Response) => {
   });
 
   try {
-    if (!submissionId) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        success: false,
-        message: "Please provide submission_id to update",
-      });
-    }
-
     const data = await db
       .update(submissions)
       .set(updatedSubmission)
@@ -125,13 +118,21 @@ export const updateSubmission = async (req: Request, res: Response) => {
 export const deleteSubmission = async (req: Request, res: Response) => {
   const { submissionId } = req.params;
 
+  if (!submissionId) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      success: false,
+      data: null,
+      message: "Please provide submission_id to update",
+    });
+  }
+
   try {
-    await db
+    const data = await db
       .delete(submissions)
       .where(eq(submissions.id, Number(submissionId)));
     return res
       .status(StatusCodes.OK)
-      .json({ success: true, data: null, message: "Delete Successfully" });
+      .json({ success: true, data: data, message: "Delete Successfully" });
   } catch (error) {
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)

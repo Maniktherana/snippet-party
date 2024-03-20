@@ -20,7 +20,7 @@ export const submissions = mysqlTable("submissions", {
   username: varchar("username", { length: 256 }).notNull(),
   language: languages.notNull(),
   code: text("code").notNull(),
-  stdin: text("stdin").notNull(),
+  stdin: text("stdin"),
   stdout: text("stdout"),
   createdAt: timestamp("createdAt").notNull().defaultNow(),
 });
@@ -29,4 +29,3 @@ export const insertSubmissionSchema = createInsertSchema(submissions);
 export const selectSubmissionSchema = createSelectSchema(submissions);
 
 export type NewSubmission = typeof submissions.$inferInsert;
-export type langauges = "JavaScript" | "Python" | "Java" | "C++";
