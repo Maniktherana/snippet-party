@@ -17,6 +17,26 @@ export type Snippet = {
 
 export const columns: ColumnDef<Snippet>[] = [
   {
+    accessorKey: "createdAt",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Date
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const createdAt = new Date(row.original.createdAt);
+      const formattedDate = createdAt.toLocaleDateString("en-GB");
+      return <p>{formattedDate}</p>;
+    },
+  },
+
+  {
     accessorKey: "username",
     header: "Username",
   },
@@ -39,7 +59,7 @@ export const columns: ColumnDef<Snippet>[] = [
     header: "Code",
     cell: ({ row }) => {
       const code = atob(row.original.code);
-      return <p className="font-mono font-extralight">{code}</p>;
+      return <code className="font-mono font-extralight">{code}</code>;
     },
   },
   {
@@ -47,7 +67,7 @@ export const columns: ColumnDef<Snippet>[] = [
     header: "Stdin",
     cell: ({ row }) => {
       const stdin = atob(row.original.stdin);
-      return <p className="font-mono font-extralight">{stdin}</p>;
+      return <code className="font-mono font-extralight">{stdin}</code>;
     },
   },
   {
@@ -55,7 +75,7 @@ export const columns: ColumnDef<Snippet>[] = [
     header: "Stdout",
     cell: ({ row }) => {
       const stdout = atob(row.original.stdout);
-      return <p className="font-mono font-extralight">{stdout}</p>;
+      return <code className="font-mono font-extralight">{stdout}</code>;
     },
   },
 ];

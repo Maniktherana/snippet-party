@@ -40,12 +40,19 @@ export default function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: "createdAt",
+      desc: true,
+    },
+  ]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
   const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+    React.useState<VisibilityState>({
+      createdAt: false,
+    });
 
   const table = useReactTable({
     data,
@@ -64,6 +71,7 @@ export default function DataTable<TData, TValue>({
       columnVisibility,
     },
   });
+
   return (
     <div>
       <div className="flex justify-between items-center py-4">
