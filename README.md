@@ -10,23 +10,19 @@ A web application to submit and display code snippets
 
 ## About
 
-This project is to satisfy the following requirements for an [assignment](https://x.com/striver_79/status/1769391241371029897?s=46):
+This project is to satisfy the following requirements for an [assignment](https://x.com/striver_79/status/1769391241371029897?s=46) by creating a web application to submit and display code snippets:
 
-"Create a web application that facilitates the submission and display of code snippets. The application should consist of two pages:
+#### Frontend
+ - [x] Page 1: Construct a form to gather username, code language (C++, Java, JavaScript, Python), standard input (stdin), and source code.
+ - [x] Page 2: Display submitted entries in a tabular format, showcasing username, code language, stdin, and submission timestamp.
 
-- [x] Page 1: Construct a form to gather the following fields: username, preferred code language (C++, Java, JavaScript, Python), standard input (stdin), and the source code.
+#### The application:
+ - [x] Functions seamlessly with data stored in MySQL tables.
+ - [x] Provides source code uploaded to a publicly accessible git repository, along with links to hosted frontend and backend applications.
 
-- [x] Page 2: Present all submitted entries in a tabular format, showcasing the username, code language, stdin, and the timestamp of submission. Additionally, limit the display of the source code to the initial 100 characters.
-
-- [x] The application must function seamlessly with data stored in MySQL tables. Both the frontend and backend applications need to be hosted.
-
-- [x] It is required to provide the source codes uploaded to a publicly accessible git repository, along with links to the hosted frontend and backend applications.
-
-- [x] Bonus Task 1: Implement Redis to cache the information displayed in the table on page 2, reducing the number of database read requests.
-
-- [x] Bonus Task 2: Utilize external APIs, such as Judge0, to retrieve the output of the code and exhibit it in a new column (stdout) on page 2. Judge0 API: https://judge0.com/, https://rapidapi.com/judge0-official/api/judge0-ce
-
-- [x] Host the frontend on platforms like Vercel or similar and complete the Google Form provided."
+#### Bonus Tasks:
+ - [x] Implemented Redis to cache information displayed in the table on page 2, reducing database read requests.
+ - [x] Utilized external APIs, such as Judge0, to retrieve code output and display it in a new column (stdout) on page 2.
 
 ## Architecture
 
